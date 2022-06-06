@@ -1,0 +1,17 @@
+default:
+  type: mysql
+  host: ''
+  port: '3306'
+  username: root
+  password: "example"
+  database: cloth
+  logging: true
+  entities:
+    - 'dist/**/*.entity{.ts,.js}'
+
+cron:
+  enable:
+    __name: CRON_ENABLE
+    __format: json
+
+jwt_secret_key: JWT_SECRET_KEY

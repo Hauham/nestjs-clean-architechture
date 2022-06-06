@@ -1,0 +1,74 @@
+<html>
+
+<head>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+        integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+        crossorigin="anonymous"></script>
+    <script>
+        var room;
+        const socket = io('http://localhost:3000/game');
+        socket.on('connect', function () {
+            room = $('#rooms').find(":selected").text();
+
+            console.log('Connected');
+
+            socket.emit('events', { test: 'test' });
+            socket.emit('identity', 0, response =>
+                console.log('Identity:', response),
+            );
+            socket.emit('join', room)
+
+            $("#send").click(function () {
+                socket.emit('join', {
+                    room: room,
+                    data: $(this).val()
+                })
+            });
+            
+            $('select').change(function () {
+                socket.emit('leave', room)
+
+                room = $('#message').val();
+
+                socket.emit('join', room)
+
+            });
+        });
+        socket.on('move', function (data) {
+            console.log('event', data);
+        });
+        socket.on('newGame', function (data) {
+            console.log('newGame', data);
+        });
+        socket.on('chat', function (data) {
+            $('chatArea').append("<p>"+data+"</p>")
+        });
+        socket.on('joined', function (data) {
+            console.log('Joined', data);
+        })
+        socket.on('exception', function (data) {
+            console.log('event', data);
+        });
+        socket.on('disconnect', function () {
+            console.log('Disconnected');
+        });
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <select name="rooms" id="rooms">
+        <option value="room1">Room1</option>
+        <option value="room2">Room2</option>
+        <option value="globinance">Globinance</option>
+        <option value="random">Random</option>
+    </select>
+    <input id='message' type="text"></input>
+    <button id='send'>Send</button>
+    <div id="'chatArea"></div>
+</body>
+
+</html>
